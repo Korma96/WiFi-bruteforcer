@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WiFiBF"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
         Title="WiFiBF" Height="400" Width="600">
     <Grid Margin="5">
         <Grid.RowDefinitions>
@@ -36,18 +37,25 @@
             <DockPanel HorizontalAlignment="Stretch">
                 <Grid DockPanel.Dock="Top">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80" />
+                        <ColumnDefinition Width="87" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Strength" TextAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="Name" TextAlignment="Left" />
                 </Grid>
                 <ListView
                     DockPanel.Dock="Bottom"
-                    ItemsSource="{Binding AccessPoints}" 
-                    SelectedItem="{Binding SelectedAccessPoint}">
+                    ItemsSource="{Binding AccessPoints, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    SelectedItem="{Binding SelectedAccessPoint, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid HorizontalAlignment="Stretch">
-                                
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding SignalStrength}" TextAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" TextAlignment="Center"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

@@ -1,7 +1,11 @@
 using GalaSoft.MvvmLight;
 using SimpleWifi;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Linq;
 using WiFiBF.Service.Interface;
+using System.Collections.Generic;
 
 namespace WiFiBF.ViewModel
 {
@@ -28,6 +32,7 @@ namespace WiFiBF.ViewModel
         public MainViewModel(IWifiService wifiService)
         {
             _wifiService = wifiService;
+            Task.Factory.StartNew(() => UpdateAvailableAccessPoints());
         }
 
         /// <summary>
@@ -88,9 +93,24 @@ namespace WiFiBF.ViewModel
             set { Set(ref _selectedAccessPoint, value); }
         }
 
-        private void UpdateAvailableAccessPoints()
+        private async Task UpdateAvailableAccessPoints()
         {
-            AccessPoints = new ObservableCollection<AccessPoint>(_wifiService.GetAvailableAccessPoints());
+            while(true)
+            {
+                GetAvailableAccessPoints();
+                // TO DO: get delay from app.config
+                await Task.Delay(5000);
+            }
+        }
+
+        private void GetAvailableAccessPoints()
+        {
+            var newAccessPoints = _wifiService.GetAvailableAccessPoints();
+            if (SelectedAccessPoint != null)
+            {
+                SelectedAccessPoint = newAccessPoints.Where(x => x.Name.Equals(SelectedAccessPoint.Name)).ToList().First();
+            }
+            AccessPoints = new ObservableCollection<AccessPoint>(newAccessPoints);
         }
 
     }
